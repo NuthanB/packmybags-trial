@@ -5,7 +5,6 @@ import { X, MessageCircle } from "lucide-react"
 
 export default function ChatBot() {
   const [isOpen, setIsOpen] = useState(false)
-  const [messages, setMessages] = useState<{ text: string; isUser: boolean }[]>([])
 
   return (
     <>
@@ -18,13 +17,8 @@ export default function ChatBot() {
             </button>
           </div>
           <div className="flex-grow overflow-y-auto p-4 space-y-4">
-            {messages.map((msg, index) => (
-              <div key={index} className={`flex ${msg.isUser ? "justify-end" : "justify-start"}`}>
-                <div className={`p-2 rounded-lg ${msg.isUser ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
-                  {msg.text}
-                </div>
-              </div>
-            ))}
+            {/* No messages state needed */}
+            <p className="text-gray-500">No messages yet.</p>
           </div>
         </div>
       ) : (
