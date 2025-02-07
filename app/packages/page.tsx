@@ -1,25 +1,23 @@
 import { cookies } from "next/headers"
 import { createClient } from "@/lib/supabase"
 import PackageCard from "@/components/PackageCard"
+import { NextPage } from "next"
 
+interface PackagesPageProps {
+  searchParams?: Record<string, string | string[] | undefined>
+}
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-export default async function PackagesPage({
-  searchParams,
-}: {
-  searchParams?: Record<string, string | undefined>
-}) {
+const PackagesPage: NextPage<PackagesPageProps> = async ({ searchParams }) => {
   const cookieStore = cookies()
   const supabase = createClient(cookieStore)
 
   let query = supabase.from("packages").select("*")
 
-  if (searchParams?.query) {
+  if (searchParams?.query && typeof searchParams.query === "string") {
     query = query.ilike("name", `%${searchParams.query}%`)
   }
 
-  if (searchParams?.type) {
+  if (searchParams?.type && typeof searchParams.type === "string") {
     query = query.eq("type", searchParams.type)
   }
 
@@ -43,3 +41,5 @@ export default async function PackagesPage({
     </div>
   )
 }
+
+export default PackagesPage

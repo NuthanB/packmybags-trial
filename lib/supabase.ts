@@ -25,15 +25,18 @@ interface CookieOptions {
 export function createClient(cookieStore = cookies()): SupabaseClient {
   return createServerClient(supabaseUrl, supabaseAnonKey, {
     cookies: {
-      get(name: string): string | null {
-        return cookieStore.get(name)?.value || null
+      async get(name: string): Promise<string | null> {
+        const store = await cookieStore
+        return store.get(name)?.value || null
       },
-      set(name: string, value: string, options: CookieOptions): void {
-        cookieStore.set({ name, value, ...options })
-      },
-      remove(name: string, options: CookieOptions): void {
-        cookieStore.set({ name, value: "", ...options })
-      },
+      set: async (name: string, value: string, options: CookieOptions): Promise<void> => {
+              const store = await cookieStore
+              store.set({ name, value, ...options })
+            },
+            remove(name: string, options: CookieOptions): void {
+              const cookieStore = cookies(); // Don't use `await` here
+              cookieStore.set(name, "", { ...options, maxAge: -1 }); // Set maxAge to -1 to remove the cookie
+            },
     },
   })
 }
